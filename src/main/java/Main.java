@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 import java.io.OutputStream;
 
 public class Main {
@@ -21,19 +22,21 @@ public class Main {
          // ensures that we don't run into 'Address already in use' errors
          serverSocket.setReuseAddress(true);
          // Wait for connection from client.
-         clientSocket = serverSocket.accept();
 
-         InputStream inputStream = clientSocket.getInputStream();
-OutputStream outputStream = clientSocket.getOutputStream();
-Scanner sc = new Scanner(inputStream);
-System.out.println("==========================================");
-while (sc.hasNextLine()) {
-    String nextLine = sc.nextLine();
-    if (nextLine.contains("PING")) {
-        outputStream.write("+PONG\r\n".getBytes());
-    }
-}
-System.out.println("==========================================");
+
+         while (true) {
+                
+                clientSocket = serverSocket.accept();
+                
+                Socket finalClientSocket = clientSocket;
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        handleClient(finalClientSocket);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
 
 
          
@@ -48,5 +51,19 @@ System.out.println("==========================================");
            System.out.println("IOException: " + e.getMessage());
          }
        }
+       
   }
+  public static void handleClient(Socket clientSocket)throws IOException {
+        InputStream inputStream = clientSocket.getInputStream();
+OutputStream outputStream = clientSocket.getOutputStream();
+Scanner sc = new Scanner(inputStream);
+System.out.println("==========================================");
+while (sc.hasNextLine()) {
+    String nextLine = sc.nextLine();
+    if (nextLine.contains("PING")) {
+        outputStream.write("+PONG\r\n".getBytes());
+    }
+}
+System.out.println("==========================================");
+       }
 }
