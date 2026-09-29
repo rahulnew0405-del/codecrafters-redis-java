@@ -53,17 +53,24 @@ public class Main {
        }
        
   }
-  public static void handleClient(Socket clientSocket)throws IOException {
-        InputStream inputStream = clientSocket.getInputStream();
-OutputStream outputStream = clientSocket.getOutputStream();
-Scanner sc = new Scanner(inputStream);
-System.out.println("==========================================");
-while (sc.hasNextLine()) {
-    String nextLine = sc.nextLine();
-    if (nextLine.contains("PING")) {
-        outputStream.write("+PONG\r\n".getBytes());
+  private static void handleClient(Socket clientSocket) throws IOException {
+    InputStream inputStream = clientSocket.getInputStream();
+    OutputStream outputStream = clientSocket.getOutputStream();
+    Scanner sc = new Scanner(inputStream);
+    System.out.println("==========================================");
+    while (sc.hasNextLine()) {
+        String nextLine = sc.nextLine();
+        System.out.println(nextLine);
+        if (nextLine.contains("PING")) {
+            outputStream.write("+PONG\r\n".getBytes());
+        }
+        if (nextLine.contains("ECHO")) {
+            String respHeader = sc.nextLine();
+            String respBody = sc.nextLine();
+            String response = respHeader + "\r\n" + respBody + "\r\n";
+            outputStream.write(response.getBytes());
+        }
     }
+    System.out.println("==========================================");
 }
-System.out.println("==========================================");
-       }
 }
