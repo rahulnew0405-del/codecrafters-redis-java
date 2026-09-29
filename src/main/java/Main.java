@@ -1,6 +1,10 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
+
 import java.net.Socket;
+import java.util.Scanner;
+import java.io.OutputStream;
 
 public class Main {
   public static void main(String[] args){
@@ -18,7 +22,15 @@ public class Main {
          serverSocket.setReuseAddress(true);
          // Wait for connection from client.
          clientSocket = serverSocket.accept();
-         clientSocket.getOutputStream().write("+PONG\r\n".getBytes());
+
+         InputStream inputStream = clientSocket.getInputStream();
+
+          Scanner sc = new Scanner(inputStream);
+
+        System.out.println(sc.nextLine());
+
+
+         
        } catch (IOException e) {
          System.out.println("IOException: " + e.getMessage());
        } finally {
