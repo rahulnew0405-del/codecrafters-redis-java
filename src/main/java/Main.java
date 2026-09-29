@@ -24,15 +24,17 @@ public class Main {
          clientSocket = serverSocket.accept();
 
          InputStream inputStream = clientSocket.getInputStream();
-
-          Scanner sc = new Scanner(inputStream);
-          System.out.println("==============================");
-        
-        while (sc.hasNextLine()) {
-        System.out.println(sc.nextLine());
-        }
-         System.out.println("=====================================");
+OutputStream outputStream = clientSocket.getOutputStream();
+Scanner sc = new Scanner(inputStream);
+System.out.println("==========================================");
+while (sc.hasNextLine()) {
+    String nextLine = sc.nextLine();
+    if (nextLine.contains("PING")) {
+        outputStream.write("+PONG\r\n".getBytes());
+    }
 }
+System.out.println("==========================================");
+
 
          
        } catch (IOException e) {
