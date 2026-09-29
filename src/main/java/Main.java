@@ -26,9 +26,13 @@ public class Main {
          InputStream inputStream = clientSocket.getInputStream();
 
           Scanner sc = new Scanner(inputStream);
-
+          System.out.println("==============================");
+        
+        while (sc.hasNextLine()) {
         System.out.println(sc.nextLine());
-
+        }
+         System.out.println("=====================================");
+}
 
          
        } catch (IOException e) {
